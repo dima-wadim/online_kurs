@@ -1,28 +1,46 @@
 version: '3'
 
 services:
-
-  redis:
-    image: redis
-    ports:
-      - '6379:6379'
-
   db:
+    restart: always
     image: postgres
+    container_name: smit_db
     env_file:
-      - ./.env
-    environment:
-      - POSTGRES_PASSWORD=mysecretpassword
-      - PGDATA=/var/lib/postgresql/data/pgdata
+      - .env
+    expose:
+      - '5432'
     volumes:
-      - pg_data:/var/lib/postgresql/data/pgdata
-    ports:
-      - '5432:5432'
+      - postgres_data:/var/lib/postgresql/data/
     healthcheck:
-      test: [ 'CMD-SHELL', 'pg_isready -d postgres -U postgres' ]
-      interval: 10s
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 5s
       timeout: 5s
       retries: 5
+  service:
+    build: .
+    container_name: smit_service
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      bash -c "python manage.py makemigrations
+      && python manage.py migrate
+      && python manage.py collectstatic --noinput
+      && python manage.py runserver"
+    ports:
+      - '8008:8000'
+    volumes:
+      - ./.env
+  redis:
+    image: redis
+    container_name: smit_redis
+    expose:
+      - '6379'
+      - '8001'
+    volumes:
+      - redis_data:/data
+    env_file:
+      - .env
 
   app:
     build: .
@@ -41,6 +59,8 @@ services:
     build: .
     tty: true
     command: celery -A config worker -l INFO
+    volumes:
+      - .:/code
     depends_on:
       - redis
       - app
@@ -55,4 +75,5 @@ services:
       - app
 
 volumes:
-  pg_data:
+  postgres_data:
+  redis_data:
