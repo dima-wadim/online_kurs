@@ -6,7 +6,7 @@ services:
     image: postgres
     container_name: smit_db
     env_file:
-      - .env
+      - ./.env
     expose:
       - '5432'
     volumes:
@@ -29,8 +29,8 @@ services:
       && python manage.py runserver"
     ports:
       - '8008:8000'
-    volumes:
-      - ./.env
+#    volumes:
+#     - ./.env
   redis:
     image: redis
     container_name: smit_redis
@@ -40,7 +40,7 @@ services:
     volumes:
       - redis_data:/data
     env_file:
-      - .env
+      - ./.env
 
   app:
     build: .
