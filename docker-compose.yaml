@@ -8,7 +8,7 @@ services:
     env_file:
       - ./.env
     expose:
-      - '5432'
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     healthcheck:
@@ -42,17 +42,17 @@ services:
     env_file:
       - ./.env
 
-#  app:
-#    build: .
-#    tty: true
-#    command: python manage.py runserver 0.0.0.0:8000
-#    volumes:
-#      - .:/code
-#    ports:
-#      - '8000:8000'
-#    depends_on:
-#      db:
-#        condition: service_healthy
+  app:
+    build: .
+    tty: true
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - '8000:8000'
+    depends_on:
+      db:
+        condition: service_healthy
 
 
   celery:
