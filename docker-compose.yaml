@@ -16,21 +16,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  service:
-    build: .
-#    container_name: smit_service
-    depends_on:
-      db:
-        condition: service_healthy
-    command: >
-      bash -c "python manage.py makemigrations
-      && python manage.py migrate
-      && python manage.py collectstatic --noinput
-      && python manage.py runserver"
-    ports:
-      - '8008:8000'
-#    volumes:
-#     - ./.env
+
   redis:
     image: redis
 #    container_name: smit_redis
