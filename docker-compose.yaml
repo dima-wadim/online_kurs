@@ -18,7 +18,7 @@ services:
       retries: 5
   service:
     build: .
-    container_name: smit_service
+#    container_name: smit_service
     depends_on:
       db:
         condition: service_healthy
@@ -33,7 +33,7 @@ services:
 #     - ./.env
   redis:
     image: redis
-    container_name: smit_redis
+#    container_name: smit_redis
     expose:
       - '6379'
       - '8001'
@@ -42,17 +42,17 @@ services:
     env_file:
       - ./.env
 
-  app:
-    build: .
-    tty: true
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
-    ports:
-      - '8000:8000'
-    depends_on:
-      db:
-        condition: service_healthy
+#  app:
+#    build: .
+#    tty: true
+#    command: python manage.py runserver 0.0.0.0:8000
+#    volumes:
+#      - .:/code
+#    ports:
+#      - '8000:8000'
+#    depends_on:
+#      db:
+#        condition: service_healthy
 
 
   celery:

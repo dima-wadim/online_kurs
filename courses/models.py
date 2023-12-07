@@ -11,6 +11,7 @@ PAYMENT_CHOICES = (
 
 
 class Course(models.Model):
+    objects = None
     title = models.CharField(max_length=100, verbose_name='Название')
     description = models.TextField(verbose_name='Описание', **NULLABLE)
     picture = models.ImageField(upload_to='course/', verbose_name='Изображение', **NULLABLE)
@@ -46,6 +47,7 @@ class Lesson(models.Model):
 
 
 class Payments(models.Model):
+    objects = None
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь',
                              **NULLABLE, related_name='payment')
     date_payment = models.DateField(auto_now_add=True, verbose_name='Дата оплаты', **NULLABLE)
